@@ -1,0 +1,375 @@
+{
+  "name": "ATECHANY - Mega Master Passive Income Orchestrator (DIOS)",
+  "nodes": [
+    {
+      "id": "Start",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [250, 100],
+      "parameters": {}
+    },
+    {
+      "id": "SetModules",
+      "name": "Set Modules",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [450, 100],
+      "parameters": {
+        "values": {
+          "boolean": [],
+          "number": [],
+          "string": [
+            {
+              "name": "modules",
+              "value": "={{[\n  { \"id\":1, \"slug\":\"digital_products\", \"title\":\"Productos Digitales\", \"publish_endpoint\":\"{{PUBLISH_GUMROAD}}\", \"potential\":\"$500-5k/mo\", \"automation\":\"Gen Mistral -> Gumroad\", \"notes\":\"E-books, templates hipnóticos\" },\n  { \"id\":2, \"slug\":\"online_courses\", \"title\":\"Cursos en Linea\", \"publish_endpoint\":\"{{PUBLISH_TEACHABLE}}\", \"potential\":\"$1k-10k/mo\", \"automation\":\"Gen Gemma -> Teachable\", \"notes\":\"Storytelling épico, upsells\" },\n  { \"id\":3, \"slug\":\"affiliate_marketing\", \"title\":\"Affiliate Marketing\", \"publish_endpoint\":\"{{PUBLISH_WORDPRESS}}\", \"potential\":\"$1k-20k/mo\", \"automation\":\"Gen Phi -> WordPress\", \"notes\":\"Reviews persuasivas\" },\n  { \"id\":4, \"slug\":\"blog_youtube\", \"title\":\"Blogging & YouTube\", \"publish_endpoint\":\"{{PUBLISH_YOUTUBE}}\", \"potential\":\"$5k-50k/mo\", \"automation\":\"Gen Nomic -> YouTube/Wordpress\", \"notes\":\"Videos + SEO masivo\" },\n  { \"id\":5, \"slug\":\"apps_software\", \"title\":\"Apps / Software\", \"publish_endpoint\":\"{{PUBLISH_BUBBLE}}\", \"potential\":\"$2k-10k/mo\", \"automation\":\"Gen Gemma -> Bubble deploy\", \"notes\":\"Herramientas AI\" },\n  { \"id\":6, \"slug\":\"stock_media\", \"title\":\"Stock Media\", \"publish_endpoint\":\"{{PUBLISH_SHUTTERSTOCK}}\", \"potential\":\"$500-5k/mo\", \"automation\":\"Gen Mistral -> Shutterstock\", \"notes\":\"Visuals hipnóticos\" },\n  { \"id\":7, \"slug\":\"pod_merch\", \"title\":\"POD / Merch\", \"publish_endpoint\":\"{{PUBLISH_PRINTFUL}}\", \"potential\":\"$1k-10k/mo\", \"automation\":\"Gen SD -> Printful\", \"notes\":\"Merch persuasivo\" },\n  { \"id\":8, \"slug\":\"dropshipping\", \"title\":\"Dropshipping\", \"publish_endpoint\":\"{{PUBLISH_SHOPIFY}}\", \"potential\":\"$5k-20k/mo\", \"automation\":\"Inventory Llama -> Oberlo\", \"notes\":\"Tiendas automatizadas\" },\n  { \"id\":9, \"slug\":\"digital_assets\", \"title\":\"Digital Assets (Domains/NFTs)\", \"publish_endpoint\":\"{{PUBLISH_MARKETPLACE}}\", \"potential\":\"$1k-15k/mo\", \"automation\":\"Gen Gemma -> Crossmint\", \"notes\":\"Flip domains/NFT\" },\n  { \"id\":10, \"slug\":\"ai_content_tools\", \"title\":\"AI Content / Tools\", \"publish_endpoint\":\"{{PUBLISH_GUMROAD}}\", \"potential\":\"$2k-10k/mo\", \"automation\":\"Gen Nomic -> Gumroad\", \"notes\":\"Generadores ultra\" },\n  { \"id\":11, \"slug\":\"membership_sites\", \"title\":\"Membership Sites\", \"publish_endpoint\":\"{{PUBLISH_MEMBERSTACK}}\", \"potential\":\"$1k-20k/mo\", \"automation\":\"Gen Mistral -> Memberstack\", \"notes\":\"Comunidades pagas\" },\n  { \"id\":12, \"slug\":\"saas_subscriptions\", \"title\":\"SaaS Subscriptions\", \"publish_endpoint\":\"{{PUBLISH_STRIPE}}\", \"potential\":\"$5k-50k/mo\", \"automation\":\"Gen Phi -> Stripe\", \"notes\":\"Platforms hipnóticas\" },\n  { \"id\":13, \"slug\":\"ecom_services\", \"title\":\"E-commerce Services\", \"publish_endpoint\":\"{{PUBLISH_SHOPIFY}}\", \"potential\":\"$2k-20k/mo\", \"automation\":\"Gen Gemma -> Shopify\", \"notes\":\"Optimización tienda\" },\n  { \"id\":14, \"slug\":\"nft_series\", \"title\":\"NFT Series\", \"publish_endpoint\":\"{{PUBLISH_CROSSMINT}}\", \"potential\":\"$1k-20k/mo\", \"automation\":\"Gen Nomic -> Crossmint\", \"notes\":\"Colecciones legendarias\" },\n  { \"id\":15, \"slug\":\"newsletters_ai\", \"title\":\"Newsletters AI\", \"publish_endpoint\":\"{{PUBLISH_MAILCHIMP}}\", \"potential\":\"$500-8k/mo\", \"automation\":\"Gen Mistral -> Mailchimp\", \"notes\":\"Newsletters masivos\" },\n  { \"id\":16, \"slug\":\"ai_coaching_bots\", \"title\":\"AI Coaching Bots\", \"publish_endpoint\":\"{{PUBLISH_OLLAMA_BOT}}\", \"potential\":\"$2k-12k/mo\", \"automation\":\"Gen Phi -> Ollama\", \"notes\":\"Sesiones IA\" },\n  { \"id\":17, \"slug\":\"social_templates\", \"title\":\"Social Templates Packs\", \"publish_endpoint\":\"{{PUBLISH_GUMROAD}}\", \"potential\":\"$1k-10k/mo\", \"automation\":\"Gen Gemma -> Gumroad\", \"notes\":\"Packs virales\" },\n  { \"id\":18, \"slug\":\"domain_flips\", \"title\":\"Domain Flipping\", \"publish_endpoint\":\"{{PUBLISH_GODADDY}}\", \"potential\":\"$3k-15k/mo\", \"automation\":\"Gen Llama -> GoDaddy\", \"notes\":\"Flips épicos\" },\n  { \"id\":19, \"slug\":\"seo_agency\", \"title\":\"SEO Agency Services\", \"publish_endpoint\":\"{{PUBLISH_GOOGLE_DRIVE}}\", \"potential\":\"$2k-20k/mo\", \"automation\":\"Gen Nomic -> Audit reports\", \"notes\":\"Audits ultra\" },\n  { \"id\":20, \"slug\":\"passive_invest_bots\", \"title\":\"Passive Investment AI Bots\", \"publish_endpoint\":\"{{PUBLISH_BROKER}}\", \"potential\":\"$5k-30k/mo\", \"automation\":\"Gen Phi -> Trading bots\", \"notes\":\"Inversiones automatizadas\" }\n]}}",
+              "type": "json"
+            }
+          ],
+          "binary": []
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "SplitInBatches",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [650, 100],
+      "parameters": {
+        "batchSize": 1
+      }
+    },
+    {
+      "id": "SetCurrent",
+      "name": "Set Current Module",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [850, 100],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "module",
+              "value": "={{ $json[\"modules\"][0] || $json }}"
+            },
+            {
+              "name": "module_id",
+              "value": "={{ $json[\"id\"] || $json.module.id }}"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "HTTP_Generate_Ollama",
+      "name": "Generate via Ollama",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1050, 100],
+      "parameters": {
+        "url": "={{ $env.OLLAMA_URL || '{{OLLAMA_URL}}' }}",
+        "options": {},
+        "responseFormat": "json",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"model\":\"gemma\",\n  \"prompt\": \"Crea contenido hipnótico orientado a ventas para el módulo: {{$json.module.title}}. Contexto: ATECHANY, voz: femenina, objetivo: conversión. Incluye: título, 3 bullets, CTA corto, metadesc.\" \n}"
+      }
+    },
+    {
+      "id": "FunctionPrepareAirtable",
+      "name": "Prepare Airtable Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1250, 100],
+      "parameters": {
+        "functionCode": "const module = $json.module || $input.item.json;\nconst gen = $json || items[0].json;\nconst content = $json[\"body\"] || $json;\nconst payload = {\n  fields: {\n    ModuleID: module.id,\n    Slug: module.slug,\n    Title: module.title,\n    GeneratedContent: JSON.stringify($json),\n    PublishEndpoint: module.publish_endpoint,\n    Potential: module.potential,\n    Notes: module.notes,\n    Status: 'generated',\n    GeneratedAt: new Date().toISOString()\n  }\n};\nreturn [{ json: payload }];"
+      }
+    },
+    {
+      "id": "AirtableUpsert",
+      "name": "Airtable Upsert",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [1450, 100],
+      "parameters": {
+        "operation": "create",
+        "applicationId": "{{AIRTABLE_BASE_ID}}",
+        "tableId": "Passive_Incomes_Tracking",
+        "fields": "={{ $json.fields }}"
+      },
+      "credentials": {
+        "airtableApi": {
+          "id": "AIRTABLE_CRED",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "id": "HTTP_Publish",
+      "name": "Publish Placeholder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1650, 100],
+      "parameters": {
+        "url": "={{ $json.PublishEndpoint || $json.fields.PublishEndpoint || '{{PUBLISH_GENERIC}}' }}",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"title\": $json.fields.Title, \"content\": $json.fields.GeneratedContent, \"source_module\": $json.fields.Slug, \"utm\": {\"source\":\"n8n\",\"campaign\":\"atechany_master\"} }"
+      }
+    },
+    {
+      "id": "NotifySlack",
+      "name": "Notify Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1850, 100],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "text": "Nuevo contenido publicado para módulo: {{$json.fields.Title}} ({{ $json.fields.Slug }}) • Endpoint: {{$json.fields.PublishEndpoint}}",
+        "channel": "{{SLACK_CHANNEL}}"
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "SLACK_CRED",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "SplitDone",
+      "name": "Split Done",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [2050, 100],
+      "parameters": {}
+    },
+    {
+      "id": "GlobalReportQuery",
+      "name": "Global Report - Airtable Query",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [950, 350],
+      "parameters": {
+        "operation": "getAll",
+        "applicationId": "{{AIRTABLE_BASE_ID}}",
+        "tableId": "Passive_Incomes_Tracking",
+        "returnAll": true,
+        "raw": false
+      },
+      "credentials": {
+        "airtableApi": {
+          "id": "AIRTABLE_CRED",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "id": "FunctionRenderReport",
+      "name": "Render Global Report",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1150, 350],
+      "parameters": {
+        "functionCode": "const rows = items.map(i=>i.json.fields || i.json);\nconst summary = rows.reduce((acc,row)=>{\n  acc.totalModules = (acc.totalModules||0)+1;\n  acc.perModule = acc.perModule || {};\n  acc.perModule[row.Slug] = row.Status || 'unknown';\n  return acc;\n},{});\nreturn [{json:{ summary, rows }}];"
+      }
+    },
+    {
+      "id": "SendReportSlack",
+      "name": "Send Report Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1350, 350],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "text": "Reporte GLOBAL ATECHANY:\\nModules procesados: {{$json.summary.totalModules}}\\nEstados: {{$json.summary.perModule}}",
+        "channel": "{{SLACK_CHANNEL}}"
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "SLACK_CRED",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "TelegramNotify",
+      "name": "Telegram Notify",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [2050, 160],
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "{{TELEGRAM_CHAT_ID}}",
+        "text": "Nuevo módulo procesado: {{$json.fields.Title}} • Endpoint: {{$json.fields.PublishEndpoint}}"
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CRED",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Set Modules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Modules": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Set Current Module",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "second": [
+        [
+          {
+            "node": "Global Report - Airtable Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Current Module": {
+      "main": [
+        [
+          {
+            "node": "Generate via Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate via Ollama": {
+      "main": [
+        [
+          {
+            "node": "Prepare Airtable Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Airtable Payload": {
+      "main": [
+        [
+          {
+            "node": "Airtable Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable Upsert": {
+      "main": [
+        [
+          {
+            "node": "Publish Placeholder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Placeholder": {
+      "main": [
+        [
+          {
+            "node": "Notify Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Slack": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Report - Airtable Query": {
+      "main": [
+        [
+          {
+            "node": "Render Global Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Render Global Report": {
+      "main": [
+        [
+          {
+            "node": "Send Report Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Report Slack": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1.0.0",
+  "tags": [
+    "ATECHANY",
+    "PASSIVE_INCOME",
+    "MASTER"
+  ]
+}
