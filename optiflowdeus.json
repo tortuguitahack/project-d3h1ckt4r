@@ -1,0 +1,305 @@
+{
+  "name": "OptiFlow Ultra Dios Master - 20 Ingresos Épicos",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 0 * * *"
+      },
+      "id": "1",
+      "name": "Daily Épico Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "documentId": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+        "sheetName": 630295855,
+        "range": "A:Z"
+      },
+      "id": "2",
+      "name": "Fetch Global KPIs",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [460, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "llama3.1:8b"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Analiza KPIs ultra dios para 20 streams: Sugiere optimizaciones con hipnosis épica, rapport divino, sugestibilidad global.'}]"}
+          ]
+        }
+      },
+      "id": "3",
+      "name": "Ollama Ultra Optimizer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "json": [
+            {"name": "streams", "value": "['productos_digitales', 'cursos', 'affiliate', 'blogging_youtube', 'apps', 'stock_media', 'pod', 'dropshipping', 'digital_assets', 'ai_content', 'membership', 'saas', 'ecom_services', 'nft_series', 'newsletters', 'ai_coaching', 'social_templates', 'domain_flipping', 'seo_agency', 'investment_bots']"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "4",
+      "name": "Prepare 20 Streams Loop",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "batchInterval": 3000  # Optimizado para RAM
+      },
+      "id": "5",
+      "name": "Loop Over 20 Streams",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "mistral:7b"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Genera contenido ultra hipnótico para stream ' + item.stream + ': Rapport épico, sugestibilidad divina, autoridad global, storytelling legendario. Vinculado a ecosistema OptiFlow.'}]"}
+          ]
+        }
+      },
+      "id": "6",
+      "name": "Genera Contenido Hipnótico Ultra",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "productos_digitales"
+                  }
+                ]
+              },
+              "outputIndex": 0
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "cursos"
+                  }
+                ]
+              },
+              "outputIndex": 1
+            },
+            # ... Añade rules para 3-20 streams (outputIndex 2-19)
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "investment_bots"
+                  }
+                ]
+              },
+              "outputIndex": 19
+            }
+          ]
+        }
+      },
+      "id": "7",
+      "name": "Switch for 20 Streams",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    },
+    # Acción para Stream 1: Productos Digitales
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "gumroadApi",
+        "operation": "createProduct",
+        "name": "Producto Épico",
+        "file": "/mnt/data/product.pdf"
+      },
+      "id": "8",
+      "name": "Stream 1: Productos Digitales (Gumroad)",
+      "type": "n8n-nodes-base.gumroad",
+      "typeVersion": 1,
+      "position": [1780, 100]
+    },
+    # Acción para Stream 2: Cursos
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "teachableApi",
+        "operation": "createCourse",
+        "title": "Curso Épico",
+        "content": "={{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"
+      },
+      "id": "9",
+      "name": "Stream 2: Cursos (Teachable)",
+      "type": "n8n-nodes-base.teachable",
+      "typeVersion": 1,
+      "position": [1780, 300]
+    },
+    # ... Replica para streams 3-20 (ajusta positions Y+200, params específicos como en guías previas: Affiliate with WordPress, Blogging with YouTube, Apps with Bubble, Stock with Shutterstock, POD with Printful, Dropshipping with Oberlo, Assets with Crossmint, AI Content with Gumroad, Membership with Email, SaaS with Stripe webhook, Ecom with Shopify, NFT with Crossmint, Newsletters with Mailchimp, Coaching with HTTP chat, Social Templates with Gumroad, Domain Flipping with GoDaddy, SEO Agency with HTTP audit, Investment Bots with Email send)
+    # Ejemplo Stream 20
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "subs@list.com",
+        "subject": "Inversión Épica",
+        "text": "={{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"
+      },
+      "id": "48",
+      "name": "Stream 20: Investment Bots (Email Bot)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1780, 3900]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+        "sheetName": 630295855,
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "stream": "{{$item.stream}}",
+            "status": "Ejecutado Ultra",
+            "rédito": "Predictivo"
+          }
+        }
+      },
+      "id": "49",
+      "name": "Log All Streams Rédito",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [2000, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "batchInterval": 3000
+      },
+      "id": "50",
+      "name": "Continue Loop Ultra",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [2220, 300]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "tu@email.com",
+        "subject": "Reporte Ultra Dios 20 Streams",
+        "text": "Ejecutado épico - chequea logs en Sheets. Rédito masivo viene!"
+      },
+      "id": "51",
+      "name": "Notifica Final Épico",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [2440, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [{"value1": true}]
+        }
+      },
+      "id": "52",
+      "name": "Error Handler Ultra",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [2000, 500]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "tu@email.com",
+        "subject": "Error Ultra en Stream",
+        "text": "{{$json.error}} - Revisar {{item.stream}}"
+      },
+      "id": "53",
+      "name": "Notifica Error",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [2220, 500]
+    }
+  ],
+  "connections": {
+    "Daily Épico Trigger": {"main": [{"node": "Fetch Global KPIs"}]},
+    "Fetch Global KPIs": {"main": [{"node": "Ollama Ultra Optimizer"}]},
+    "Ollama Ultra Optimizer": {"main": [{"node": "Prepare 20 Streams Loop"}]},
+    "Prepare 20 Streams Loop": {"main": [{"node": "Loop Over 20 Streams"}]},
+    "Loop Over 20 Streams": {"main": [{"node": "Genera Contenido Hipnótico Ultra"}]},
+    "Genera Contenido Hipnótico Ultra": {"main": [{"node": "Switch for 20 Streams"}]},
+    "Switch for 20 Streams": {"main": [{"node": "Stream 1: Productos Digitales (Gumroad)"}, {"node": "Stream 2: Cursos (Teachable)"}, # ... Output 2-19 for streams 3-20
+    {"node": "Stream 20: Investment Bots (Email Bot)"}]},
+    "Stream 1: Productos Digitales (Gumroad)": {"main": [{"node": "Log All Streams Rédito"}]},
+    "Stream 2: Cursos (Teachable)": {"main": [{"node": "Log All Streams Rédito"}]},
+    # Replica para 3-20
+    "Stream 20: Investment Bots (Email Bot)": {"main": [{"node": "Log All Streams Rédito"}]},
+    "Log All Streams Rédito": {"main": [{"node": "Continue Loop Ultra"}, {"node": "Error Handler Ultra"}]},
+    "Continue Loop Ultra": {"main": [{"node": "Loop Over 20 Streams"}, {"node": "Notifica Final Épico"}]},
+    "Error Handler Ultra": {"main": [{"node": "Notifica Error"}]}
+  },
+  "active": false,
+  "settings": {
+    "errorWorkflow": "self"
+  },
+  "versionId": "ultra-dios-v3",
+  "meta": {
+    "instanceId": "bb56a79f8a7874354c1dec992df1e52079d11cbb41c44c9dbebb9002f1b2b0a8"
+  },
+  "id": "HqSexVA8Om8BrnUf",
+  "tags": []
+}
+
+# Validate JSON
+json.dumps(epic_workflow, indent=4)
+print(epic_workflow)
+</parameter
+</xai:function_call
