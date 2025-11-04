@@ -1,0 +1,146 @@
+{
+  "name": "Productos Digitales Ultra Dios - Stream 1",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 */4 * * *"
+      },
+      "id": "1",
+      "name": "Trigger Cada 4 Horas",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "mistral:7b"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Genera producto digital ultra hipnótico: E-book/template with rapport épico (visión rédito divino), sugestibilidad sutil (acción legendaria), autoridad global (stats masivos), storytelling emocional. Vinculado to ecosistema OptiFlow.'}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Genera Producto Hipnótico (Mistral)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.stability.ai/v1/generation/stable-diffusion-xl-1.0/text-to-image",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "text_prompts", "value": "[{text: '{{$node['Genera Producto Hipnótico (Mistral)'].json.message.content}}'}]"},
+            {"name": "api_key", "value": "your-stability-key"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Genera Visual Hipnótico (Stability.ai)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "gumroadApi",
+        "operation": "createProduct",
+        "name": "Producto Digital Épico Ultra",
+        "file": "/mnt/data/product.pdf",
+        "price": 9.99,
+        "description": "{{$node['Genera Producto Hipnótico (Mistral)'].json.message.content}}",
+        "additionalFields": {
+          "countries": "global",
+          "image": "{{$node['Genera Visual Hipnótico (Stability.ai)'].json.image_url}}"
+        }
+      },
+      "id": "4",
+      "name": "Sube a Gumroad / Etsy Masivo",
+      "type": "n8n-nodes-base.gumroad",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "credentials": {
+        "gumroadApi": {
+          "id": "your-gumroad-id",
+          "name": "Gumroad Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.paypal.com/v1/payments/payment",  # Placeholder for your wallet, e.g. PayPal API
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "intent", "value": "sale"},
+            {"name": "payer", "value": "paypal"},
+            {"name": "transactions", "value": "[{\"amount\": {\"total\": '9.99', \"currency\": 'USD\"}}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "5",
+      "name": "Integra Wallet Recibo (e.g. PayPal)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1120, 300],
+      "credentials": {
+        "paypalApi": {
+          "id": "your-paypal-id",
+          "name": "PayPal Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+        "sheetName": 630295855,
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "stream": "productos_digitales",
+            "status": "Ejecutado Ultra Dios",
+            "rédito": "Predictivo Épico",
+            "Columna 1": "{{$node['Genera Producto Hipnótico (Mistral)'].json.message.content}}"
+          }
+        },
+        "options": {
+          "attemptToConvertTypes": true
+        }
+      },
+      "id": "6",
+      "name": "Log Results in Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1340, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Trigger Cada 4 Horas": {"main": [{"node": "Genera Producto Hipnótico (Mistral)"}]},
+    "Genera Producto Hipnótico (Mistral)": {"main": [{"node": "Genera Visual Hipnótico (Stability.ai)"}]},
+    "Genera Visual Hipnótico (Stability.ai)": {"main": [{"node": "Sube a Gumroad / Etsy Masivo"}]},
+    "Sube a Gumroad / Etsy Masivo": {"main": [{"node": "Integra Wallet Recibo (e.g. PayPal)"}]},
+    "Integra Wallet Recibo (e.g. PayPal)": {"main": [{"node": "Log Results in Sheets"}]}
+  },
+  "active": false
+}
