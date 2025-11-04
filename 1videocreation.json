@@ -1,0 +1,139 @@
+{
+  "name": "Masiva Video Creation Ultra Dios with IDs",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 */2 * * *"
+      },
+      "id": "1",
+      "name": "Trigger Cada 2 Horas Épico",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "mistral:7b"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Genera script video ultra hipnótico for 20 incomes: Rapport divino with visions of global rédito, sugestibilidad sutil for clicks on affiliate links, autoridad masiva with 2025 stats, storytelling legendario. Include localized Amazon links: Australia diego0e3-22, Belgium diegoedgard05-21, Canada diego09a4-20, France diegoedgard06-21, Germany diegoedgar016-21, Italy diegoedgard04-21, Netherlands diegoedgard03-21, Poland diegoedgardo-21, Spain diegoedgard08-21, Sweden diegoedgard01-21, UK diegoedgard20-21. Vincula to all streams.'}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Genera Script Hipnótico with IDs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "text", "value": "{{$node['Genera Script Hipnótico with IDs'].json.message.content}}"},
+            {"name": "model_id", "value": "eleven_multilingual_v2"},
+            {"name": "voice", "value": "your-voice-id"},
+            {"name": "api_key", "value": "your-elevenlabs-key"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Genera Audio Persuasivo ElevenLabs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.stability.ai/v1/generation/stable-diffusion-xl-1.0/text-to-image",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "text_prompts", "value": "[{text: '{{$node['Genera Script Hipnótico with IDs'].json.message.content}}'}]"},
+            {"name": "api_key", "value": "your-stability-key"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "4",
+      "name": "Genera Imagen Hipnótica Stability.ai",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "code": "import subprocess; subprocess.run(['ffmpeg', '-i', item.audio_path, '-loop', '1', '-i', item.image_path, '-c:v', 'libx264', '-shortest', '/mnt/data/video-ultra.mp4']); return {'video_path': '/mnt/data/video-ultra.mp4'}"
+      },
+      "id": "5",
+      "name": "Combina Video Épico FFmpeg",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "Video Ingresos Épico with IDs",
+        "file": "{{$node['Combina Video Épico FFmpeg'].json.video_path}}",
+        "additionalFields": {}
+      },
+      "id": "6",
+      "name": "Publica YouTube/TikTok/IG Masivo",
+      "type": "n8n-nodes-base.youtube",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "youtubeOAuth2Api": {
+          "id": "your-yt-id",
+          "name": "YouTube Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+        "sheetName": 630295855,
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "7",
+      "name": "Log Video Results",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1560, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Trigger Cada 2 Horas Épico": {"main": [{"node": "Genera Script Hipnótico with IDs"}]},
+    "Genera Script Hipnótico with IDs": {"main": [{"node": "Genera Audio Persuasivo ElevenLabs"}]},
+    "Genera Audio Persuasivo ElevenLabs": {"main": [{"node": "Genera Imagen Hipnótica Stability.ai"}]},
+    "Genera Imagen Hipnótica Stability.ai": {"main": [{"node": "Combina Video Épico FFmpeg"}]},
+    "Combina Video Épico FFmpeg": {"main": [{"node": "Publica YouTube/TikTok/IG Masivo"}]},
+    "Publica YouTube/TikTok/IG Masivo": {"main": [{"node": "Log Video Results"}]}
+  },
+  "active": false
+}
