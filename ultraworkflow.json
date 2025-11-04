@@ -1,0 +1,929 @@
+{
+  "name": "OptiFlow Ultra Dios Master - 20 Ingresos Épicos",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 0 * * *"
+      },
+      "id": "1",
+      "name": "Daily Épico Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "documentId": {
+          "__rl": true,
+          "value": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_INGRESOS_INFINITOS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 630295855,
+          "mode": "list",
+          "cachedResultName": "Ecosistema Global",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74/edit#gid=630295855"
+        },
+        "range": "A:Z"
+      },
+      "id": "2",
+      "name": "Fetch Global KPIs",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [460, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "llama3.1:8b"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Analiza KPIs ultra dios para 20 streams: Sugiere optimizaciones con hipnosis épica, rapport divino, sugestibilidad global, autoridad masiva, storytelling legendario. Output JSON: {\\\"streams\\\": [lista de 20], \\\"optimizations\\\": \\\"sugerencias épicas\\\"}.'}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Ollama Ultra Optimizer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "json": [
+            {"name": "streams", "value": "['productos_digitales', 'cursos', 'affiliate', 'blogging_youtube', 'apps', 'stock_media', 'pod', 'dropshipping', 'digital_assets', 'ai_content', 'membership', 'saas', 'ecom_services', 'nft_series', 'newsletters', 'ai_coaching', 'social_templates', 'domain_flipping', 'seo_agency', 'investment_bots']"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "4",
+      "name": "Prepare 20 Streams Loop",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "batchInterval": 3000
+      },
+      "id": "5",
+      "name": "Loop Over 20 Streams Épico",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "mistral:7b"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Genera contenido ultra hipnótico para stream ' + $item.stream + ': Rapport épico con visiones divinas, sugestibilidad sutil para acción legendaria, autoridad global con stats masivos, storytelling emocional épico. Vinculado a ecosistema OptiFlow.'}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "6",
+      "name": "Genera Contenido Hipnótico Ultra",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "productos_digitales"
+                  }
+                ]
+              },
+              "outputIndex": 0
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "cursos"
+                  }
+                ]
+              },
+              "outputIndex": 1
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "affiliate"
+                  }
+                ]
+              },
+              "outputIndex": 2
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "blogging_youtube"
+                  }
+                ]
+              },
+              "outputIndex": 3
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "apps"
+                  }
+                ]
+              },
+              "outputIndex": 4
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "stock_media"
+                  }
+                ]
+              },
+              "outputIndex": 5
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "pod"
+                  }
+                ]
+              },
+              "outputIndex": 6
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "dropshipping"
+                  }
+                ]
+              },
+              "outputIndex": 7
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "digital_assets"
+                  }
+                ]
+              },
+              "outputIndex": 8
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "ai_content"
+                  }
+                ]
+              },
+              "outputIndex": 9
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "membership"
+                  }
+                ]
+              },
+              "outputIndex": 10
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "saas"
+                  }
+                ]
+              },
+              "outputIndex": 11
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "ecom_services"
+                  }
+                ]
+              },
+              "outputIndex": 12
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "nft_series"
+                  }
+                ]
+              },
+              "outputIndex": 13
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "newsletters"
+                  }
+                ]
+              },
+              "outputIndex": 14
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "ai_coaching"
+                  }
+                ]
+              },
+              "outputIndex": 15
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "social_templates"
+                  }
+                ]
+              },
+              "outputIndex": 16
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "domain_flipping"
+                  }
+                ]
+              },
+              "outputIndex": 17
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "seo_agency"
+                  }
+                ]
+              },
+              "outputIndex": 18
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "{{$item.stream}}",
+                    "operation": "equals",
+                    "value2": "investment_bots"
+                  }
+                ]
+              },
+              "outputIndex": 19
+            }
+          ]
+        }
+      },
+      "id": "7",
+      "name": "Switch for 20 Streams Dios",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "gumroadApi",
+        "operation": "createProduct",
+        "name": "Producto Épico Ultra",
+        "file": "/mnt/data/ebook.pdf",
+        "price": 9.99,
+        "description": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "additionalFields": {}
+      },
+      "id": "8",
+      "name": "Stream 1: Productos Digitales (Gumroad)",
+      "type": "n8n-nodes-base.gumroad",
+      "typeVersion": 1,
+      "position": [1780, 100],
+      "credentials": {
+        "gumroadApi": {
+          "id": "your-gumroad-id",
+          "name": "Gumroad Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "teachableApi",
+        "operation": "createCourse",
+        "title": "Curso Épico Ultra",
+        "content": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "price": 49.99,
+        "description": "Curso ultra hipnótico para ingresos pasivos",
+        "additionalFields": {}
+      },
+      "id": "9",
+      "name": "Stream 2: Cursos (Teachable)",
+      "type": "n8n-nodes-base.teachable",
+      "typeVersion": 1,
+      "position": [1780, 300],
+      "credentials": {
+        "teachableApi": {
+          "id": "your-teachable-id",
+          "name": "Teachable Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "Review Épica Ultra",
+        "additionalFields": {
+          "status": "publish"
+        }
+      },
+      "id": "10",
+      "name": "Stream 3: Affiliate (WordPress)",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [1780, 500],
+      "credentials": {
+        "wordpressApi": {
+          "id": "your-wp-id",
+          "name": "WordPress Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "Video Épico Ultra",
+        "file": "/mnt/data/video.mp4",
+        "additionalFields": {}
+      },
+      "id": "11",
+      "name": "Stream 4: Blogging YouTube (YouTube)",
+      "type": "n8n-nodes-base.youtube",
+      "typeVersion": 1,
+      "position": [1780, 700],
+      "credentials": {
+        "youtubeOAuth2Api": {
+          "id": "your-yt-id",
+          "name": "YouTube Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.bubble.io/v1/app/deploy",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "code", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "12",
+      "name": "Stream 5: Apps (Bubble)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 900]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.shutterstock.com/v2/images",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "file", "value": "/mnt/data/stock.jpg"},
+            {"name": "keywords", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "13",
+      "name": "Stream 6: Stock Media (Shutterstock)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 1100]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "printfulApi",
+        "operation": "createOrder",
+        "design": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "additionalFields": {}
+      },
+      "id": "14",
+      "name": "Stream 7: POD (Printful)",
+      "type": "n8n-nodes-base.printful",
+      "typeVersion": 1,
+      "position": [1780, 1300],
+      "credentials": {
+        "printfulApi": {
+          "id": "your-printful-id",
+          "name": "Printful Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.oberlo.com/orders",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "productId", "value": "example"},
+            {"name": "quantity", "value": 10}
+          ]
+        },
+        "options": {}
+      },
+      "id": "15",
+      "name": "Stream 8: Dropshipping (Oberlo)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 1500]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.crossmint.com/nft/mint",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "description", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "16",
+      "name": "Stream 9: Digital Assets (Crossmint)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 1700]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "gumroadApi",
+        "operation": "createProduct",
+        "name": "AI Tool Épico Ultra",
+        "file": "/mnt/data/ai-tool.zip",
+        "price": 29.99,
+        "description": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "additionalFields": {}
+      },
+      "id": "17",
+      "name": "Stream 10: AI Content/Tools (Gumroad)",
+      "type": "n8n-nodes-base.gumroad",
+      "typeVersion": 1,
+      "position": [1780, 1900],
+      "credentials": {
+        "gumroadApi": {
+          "id": "your-gumroad-id",
+          "name": "Gumroad Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "members@list.com",
+        "subject": "Bienvenido a Comunidad Épica",
+        "text": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "html": true,
+        "additionalFields": {}
+      },
+      "id": "18",
+      "name": "Stream 11: Membership Sites (Email Welcome)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1780, 2100]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.stripe.com/v1/subscriptions",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "customer", "value": "example"},
+            {"name": "items", "value": "[{\"price\": \"price_id\"}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "19",
+      "name": "Stream 12: SaaS Subscriptions (Stripe)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 2300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.shopify.com/admin/api/2025-10/orders.json",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "script", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "20",
+      "name": "Stream 13: E-commerce Services (Shopify)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 2500]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.crossmint.com/nft/mint-series",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "series_desc", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "21",
+      "name": "Stream 14: NFT Series (Crossmint)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 2700]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "subs@list.com",
+        "subject": "Newsletter Épica Ultra",
+        "text": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "html": true,
+        "additionalFields": {}
+      },
+      "id": "22",
+      "name": "Stream 15: Newsletters AI (Email Send)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1780, 2900]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "phi3:mini"},
+            {"name": "messages", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "23",
+      "name": "Stream 16: AI Coaching Bots (Ollama Response)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 3100]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "nodeCredentialType": "gumroadApi",
+        "operation": "createProduct",
+        "name": "Templates Sociales Épicos",
+        "file": "/mnt/data/templates.zip",
+        "price": 19.99,
+        "description": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "additionalFields": {}
+      },
+      "id": "24",
+      "name": "Stream 17: Social Templates Packs (Gumroad)",
+      "type": "n8n-nodes-base.gumroad",
+      "typeVersion": 1,
+      "position": [1780, 3300],
+      "credentials": {
+        "gumroadApi": {
+          "id": "your-gumroad-id",
+          "name": "Gumroad Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.godaddy.com/v1/domains/flip",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "domain", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "25",
+      "name": "Stream 18: Domain Flipping (GoDaddy)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 3500]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "nomic-embed-text"},
+            {"name": "messages", "value": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "26",
+      "name": "Stream 19: SEO Agency (Nomic Audit)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1780, 3700]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "subs@list.com",
+        "subject": "Inversión Épica Ultra",
+        "text": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+        "html": true,
+        "additionalFields": {}
+      },
+      "id": "27",
+      "name": "Stream 20: Passive Investment Bots (Email)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1780, 3900]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_INGRESOS_INFINITOS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 630295855,
+          "mode": "list",
+          "cachedResultName": "Ecosistema Global",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74/edit#gid=630295855"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "stream": "{{$item.stream}}",
+            "status": "Ejecutado Ultra Dios",
+            "rédito": "Predictivo Épico",
+            "Columna 1": "{{$node['Genera Contenido Hipnótico Ultra'].json.message.content}}",
+            "ofertas best": "Masividad Global",
+            "Accesorios best Sellers": "Hipnosis Divina",
+            "Laptops": "Escalabilidad Ultra",
+            "Asus": "Nodo Principal",
+            "Alienware": "Backup Épico",
+            "Tablets": "Monitor Mobile",
+            "top laptops": "Hardware Dios",
+            "CPU": "i7 U-Series",
+            "Apple": "Alternativa Premium",
+            "Accesorios": "Hubs y SSDs",
+            "Audifonos": "Audio Hipnótico",
+            "minicpu": "Pi Fallback",
+            "books": "E-books Pasivos",
+            "memorias SSD": "Storage Infinito",
+            "oferts de hoy": "Deals Épicos",
+            "Hacking": "Seguridad Ultra",
+            "menos de 25$": "Low-Cost Boost",
+            "Todo en uno": "Ecosistema Completo",
+            "Dispositivos y acce de amaz": "Integración Amazon",
+            "Hogar inteligente": "Automación Doméstica",
+            "Game Store": "Gamificación Rédito",
+            "gitadores y figuras claves": "Influencers Alianza",
+            "Innovadores en la cocina": "Niches Épicos",
+            "ELectronica": "Electrónicos Pasivos",
+            "Productos y accesorios": "Upsell Masivo"
+          }
+        },
+        "options": {
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": false
+        }
+      },
+      "id": "28",
+      "name": "Log All Streams Ultra Dios",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [2000, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "batchInterval": 3000
+      },
+      "id": "29",
+      "name": "Continue Loop Épico",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [2220, 300]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "tu@email.com",
+        "subject": "Reporte Ultra Dios - 20 Streams Ejecutados",
+        "text": "Épico total: Todos streams ran, chequea Sheets para rédito masivo. Hipnosis divina activada!",
+        "html": true,
+        "additionalFields": {}
+      },
+      "id": "30",
+      "name": "Notifica Final Épico",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [2440, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [{"value1": true}]
+        }
+      },
+      "id": "31",
+      "name": "Error Handler Ultra",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [2000, 500]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "optiflow@dios.com",
+        "toEmail": "tu@email.com",
+        "subject": "Error Ultra Dios - Revisar Stream",
+        "text": "Error: {{$json.error}} - Stream: {{$item.stream}}. Retrying con hipnosis divina...",
+        "html": true
+      },
+      "id": "32",
+      "name": "Notifica Error y Retry",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [2220, 500]
+    }
+  ],
+  "connections": {
+    "Daily Épico Trigger": {"main": [{"node": "Fetch Global KPIs"}]},
+    "Fetch Global KPIs": {"main": [{"node": "Ollama Ultra Optimizer"}]},
+    "Ollama Ultra Optimizer": {"main": [{"node": "Prepare 20 Streams Loop"}]},
+    "Prepare 20 Streams Loop": {"main": [{"node": "Loop Over 20 Streams Épico"}]},
+    "Loop Over 20 Streams Épico": {"main": [{"node": "Genera Contenido Hipnótico Ultra"}]},
+    "Genera Contenido Hipnótico Ultra": {"main": [{"node": "Switch for 20 Streams Dios"}]},
+    "Switch for 20 Streams Dios": {"main": [{"node": "Stream 1: Productos Digitales (Gumroad)"}, {"node": "Stream 2: Cursos (Teachable)"}, {"node": "Stream 3: Affiliate (WordPress)"}, {"node": "Stream 4: Blogging YouTube (YouTube)"}, {"node": "Stream 5: Apps (Bubble)"}, {"node": "Stream 6: Stock Media (Shutterstock)"}, {"node": "Stream 7: POD (Printful)"}, {"node": "Stream 8: Dropshipping (Oberlo)"}, {"node": "Stream 9: Digital Assets (Crossmint)"}, {"node": "Stream 10: AI Content/Tools (Gumroad)"}, {"node": "Stream 11: Membership Sites (Email Welcome)"}, {"node": "Stream 12: SaaS Subscriptions (Stripe)"}, {"node": "Stream 13: E-commerce Services (Shopify)"}, {"node": "Stream 14: NFT Series (Crossmint)"}, {"node": "Stream 15: Newsletters AI (Email Send)"}, {"node": "Stream 16: AI Coaching Bots (Ollama Response)"}, {"node": "Stream 17: Social Templates Packs (Gumroad)"}, {"node": "Stream 18: Domain Flipping (GoDaddy)"}, {"node": "Stream 19: SEO Agency (Nomic Audit)"}, {"node": "Stream 20: Passive Investment Bots (Email)"}]},
+    "Stream 1: Productos Digitales (Gumroad)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 2: Cursos (Teachable)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 3: Affiliate (WordPress)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 4: Blogging YouTube (YouTube)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 5: Apps (Bubble)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 6: Stock Media (Shutterstock)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 7: POD (Printful)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 8: Dropshipping (Oberlo)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 9: Digital Assets (Crossmint)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 10: AI Content/Tools (Gumroad)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 11: Membership Sites (Email Welcome)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 12: SaaS Subscriptions (Stripe)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 13: E-commerce Services (Shopify)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 14: NFT Series (Crossmint)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 15: Newsletters AI (Email Send)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 16: AI Coaching Bots (Ollama Response)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 17: Social Templates Packs (Gumroad)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 18: Domain Flipping (GoDaddy)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 19: SEO Agency (Nomic Audit)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Stream 20: Passive Investment Bots (Email)": {"main": [{"node": "Log All Streams Ultra Dios"}]},
+    "Log All Streams Ultra Dios": {"main": [{"node": "Continue Loop Épico"}, {"node": "Error Handler Ultra"}]},
+    "Continue Loop Épico": {"main": [{"node": "Loop Over 20 Streams Épico"}, {"node": "Notifica Final Épico"}]},
+    "Error Handler Ultra": {"main": [{"node": "Notifica Error y Retry"}]}
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "timezone": "America/Caracas",
+    "errorWorkflow": "self"
+  },
+  "versionId": "ultra-dios-v5",
+  "meta": {
+    "instanceId": "bb56a79f8a7874354c1dec992df1e52079d11cbb41c44c9dbebb9002f1b2b0a8"
+  },
+  "id": "HqSexVA8Om8BrnUf",
+  "tags": []
+}
