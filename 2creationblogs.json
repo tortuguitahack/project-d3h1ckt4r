@@ -1,0 +1,86 @@
+{
+  "name": "Masiva Blogs Creation Ultra Dios with IDs",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 */3 * * *"
+      },
+      "id": "1",
+      "name": "Trigger Cada 3 Horas Épico",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "nomic-embed-text"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Genera blog ultra hipnótico with search semántico: Incorpora Amazon IDs by country for links localizados (Australia diego0e3-22, etc.). Rapport con visiones divinas, sugestibilidad for clics, autoridad with stats, storytelling épico. For 20 incomes vinculados.'}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Genera Blog Hipnótico with IDs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "title": "Blog Ingresos Épico with IDs",
+        "content": "{{$node['Genera Blog Hipnótico with IDs'].json.message.content}}",
+        "additionalFields": {
+          "status": "publish"
+        }
+      },
+      "id": "3",
+      "name": "Publica WordPress/Medium Masivo",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "wordpressApi": {
+          "id": "your-wp-id",
+          "name": "WordPress Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+        "sheetName": 630295855,
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "4",
+      "name": "Log Blog Results",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [900, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Trigger Cada 3 Horas Épico": {"main": [{"node": "Genera Blog Hipnótico with IDs"}]},
+    "Genera Blog Hipnótico with IDs": {"main": [{"node": "Publica WordPress/Medium Masivo"}]},
+    "Publica WordPress/Medium Masivo": {"main": [{"node": "Log Blog Results"}]}
+  },
+  "active": false
+}
