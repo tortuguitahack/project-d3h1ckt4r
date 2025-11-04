@@ -1,0 +1,84 @@
+{
+  "name": "Masiva Web Pages Creation Ultra Dios with IDs",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 0 */6 * *"
+      },
+      "id": "1",
+      "name": "Trigger Cada 6 Horas Épico",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "model", "value": "gemma:7b"},
+            {"name": "messages", "value": "=[{role: 'system', content: 'Genera landing page ultra hipnótico: Incorpora Amazon IDs localized for affiliate buttons (Australia diego0e3-22, etc.). Rapport with divine visions, sugestibilidad for conversions, autoridad with global testimonials, storytelling legendario. For 20 incomes ecosystem.'}]"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Genera Landing Hipnótico with IDs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.bubble.io/v1/page/create",
+        "jsonParameters": true,
+        "bodyParameters": {
+          "json": true,
+          "parameters": [
+            {"name": "content", "value": "{{$node['Genera Landing Hipnótico with IDs'].json.message.content}}"},
+            {"name": "api_key", "value": "your-bubble-key"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Crea Web Page Bubble Masivo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "1bNqqtvLgE7WbW_smSYqsmE7pUQod7zIovVThcHBKM74",
+        "sheetName": 630295855,
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "4",
+      "name": "Log Web Results",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [900, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Trigger Cada 6 Horas Épico": {"main": [{"node": "Genera Landing Hipnótico with IDs"}]},
+    "Genera Landing Hipnótico with IDs": {"main": [{"node": "Crea Web Page Bubble Masivo"}]},
+    "Crea Web Page Bubble Masivo": {"main": [{"node": "Log Web Results"}]}
+  },
+  "active": false
+}
