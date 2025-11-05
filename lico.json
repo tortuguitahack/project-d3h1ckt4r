@@ -1,0 +1,1105 @@
+{
+  "name": "My workflow 7",
+  "nodes": [
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "id": "eb85b85d-8784-4a6b-8199-f5828cb5bfcb",
+      "name": "Telegram Commands",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        1040
+      ],
+      "webhookId": "d4ff5fee-f7de-4768-b901-755c21846ea0",
+      "credentials": {
+        "telegramApi": {
+          "id": "NMXTo1B6AuOLjtWL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Bienvenido a nuestra licorería. ¿En qué puedo ayudarte hoy?",
+        "options": {}
+      },
+      "id": "34f9eef8-925f-4a78-9f27-60a28b6e877e",
+      "name": "Customer Chat Interface",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        328
+      ],
+      "webhookId": "69244561-c253-4e28-9fd1-73226784be99"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "347e666f-bc97-4735-a05a-497c61a28c96",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "vender",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Register Sale"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "gasto",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Register Expense"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "ventas_dia",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "ventas_semana",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "ingresos",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "egresos",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "or"
+              },
+              "renameOutput": true,
+              "outputKey": "Sales/Financial Reports"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "stock",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Inventory Report"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "48c4cbcc-a83b-4a94-9c7e-1fa44481c466",
+      "name": "Route Telegram Commands",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        672,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Parse Telegram message to extract command and parameters\nconst messageText = $input.item.json.message?.text || '';\nconst chatId = $input.item.json.message?.chat?.id;\n\n// Initialize result object\nlet result = {\n  chatId: chatId,\n  command: null,\n  parameters: {},\n  rawText: messageText,\n  isValid: false\n};\n\n// Extract command (first word starting with /)\nconst commandMatch = messageText.match(/^\\/([a-z_]+)/);\nif (commandMatch) {\n  result.command = commandMatch[1];\n  \n  // Remove command from text to get parameters\n  const paramsText = messageText.replace(/^\\/[a-z_]+\\s*/, '').trim();\n  \n  // Parse based on command type\n  switch(result.command) {\n    case 'vender':\n    case 'venta':\n      // Expected format: /vender ProductName Quantity Price\n      // Example: /vender Empanada 5 1500\n      const saleMatch = paramsText.match(/^(.+?)\\s+(\\d+)\\s+(\\d+\\.?\\d*)$/);\n      if (saleMatch) {\n        result.parameters = {\n          productName: saleMatch[1].trim(),\n          quantity: parseInt(saleMatch[2]),\n          price: parseFloat(saleMatch[3])\n        };\n        result.isValid = true;\n      }\n      break;\n      \n    case 'gasto':\n    case 'expense':\n      // Expected format: /gasto Description Amount\n      // Example: /gasto Compra ingredientes 50000\n      const expenseMatch = paramsText.match(/^(.+?)\\s+(\\d+\\.?\\d*)$/);\n      if (expenseMatch) {\n        result.parameters = {\n          description: expenseMatch[1].trim(),\n          amount: parseFloat(expenseMatch[2])\n        };\n        result.isValid = true;\n      }\n      break;\n      \n    case 'ventas_dia':\n    case 'daily_sales':\n      // No parameters needed\n      result.isValid = true;\n      break;\n      \n    case 'ventas_semana':\n    case 'weekly_sales':\n      // No parameters needed\n      result.isValid = true;\n      break;\n      \n    case 'ingresos':\n    case 'income':\n      // No parameters needed\n      result.isValid = true;\n      break;\n      \n    case 'egresos':\n    case 'expenses':\n      // No parameters needed\n      result.isValid = true;\n      break;\n      \n    case 'stock':\n    case 'inventory':\n      // Optional: specific product or all\n      if (paramsText) {\n        result.parameters = {\n          productName: paramsText.trim()\n        };\n      }\n      result.isValid = true;\n      break;\n      \n    case 'ayuda':\n    case 'help':\n      result.isValid = true;\n      break;\n      \n    default:\n      result.isValid = false;\n      result.error = 'Comando no reconocido';\n  }\n} else {\n  result.error = 'No se encontró un comando válido';\n}\n\nreturn result;"
+      },
+      "id": "18505804-195e-4438-99e8-82863492d349",
+      "name": "Parse Telegram Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Ventas"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "Producto": "={{ $('Parse Telegram Message').item.json.producto }}",
+            "Cantidad": "={{ $('Parse Telegram Message').item.json.cantidad }}",
+            "Precio_Unitario": "={{ $('Parse Telegram Message').item.json.precio_unitario }}",
+            "Total": "={{ $('Parse Telegram Message').item.json.cantidad * $('Parse Telegram Message').item.json.precio_unitario }}",
+            "Usuario": "={{ $('Telegram Commands').item.json.message.from.username }}"
+          },
+          "matchingColumns": [
+            "Producto"
+          ],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Producto",
+              "displayName": "Producto",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cantidad",
+              "displayName": "Cantidad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Precio_Unitario",
+              "displayName": "Precio_Unitario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total",
+              "displayName": "Total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Usuario",
+              "displayName": "Usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fc8a14a8-b855-42d9-8678-c98e4685d234",
+      "name": "Register Sale",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        1616
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Gastos"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $now.toFormat('yyyy-MM-dd') }}",
+            "Concepto": "={{ $('Parse Telegram Message').item.json.concepto }}",
+            "Monto": "={{ $('Parse Telegram Message').item.json.monto }}",
+            "Categoria": "={{ $('Parse Telegram Message').item.json.categoria }}",
+            "Usuario": "={{ $('Telegram Commands').item.json.message.from.username }}"
+          },
+          "matchingColumns": [
+            "Fecha"
+          ],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Concepto",
+              "displayName": "Concepto",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Monto",
+              "displayName": "Monto",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Categoria",
+              "displayName": "Categoria",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Usuario",
+              "displayName": "Usuario",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8cf4fe74-8ebc-4ccb-beb4-0b0aa8402510",
+      "name": "Register Expense",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        656
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Ventas"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically"
+            }
+          }
+        }
+      },
+      "id": "e81a2aa3-eb6d-46dc-9cab-35a7f7b01048",
+      "name": "Get Sales Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        944
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Gastos"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically"
+            }
+          }
+        }
+      },
+      "id": "cacf39fb-9676-4130-83f0-153c4a905bab",
+      "name": "Get Expenses Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        1808
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Inventario"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically"
+            }
+          }
+        }
+      },
+      "id": "45c096b8-8144-4d2e-bf20-41ffe8b0d391",
+      "name": "Get Inventory Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        1424
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Inventario"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "matchingColumns": [
+              "Producto"
+            ],
+            "schema": [
+              {
+                "id": "Producto",
+                "displayName": "Producto",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cantidad",
+                "displayName": "Cantidad",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": false
+              }
+            ],
+            "mappings": [
+              {
+                "id": "id-1",
+                "fieldId": "Producto",
+                "fieldValue": "={{ $json.producto }}"
+              },
+              {
+                "id": "id-2",
+                "fieldId": "Cantidad",
+                "fieldValue": "={{ $json.stock_actual - $json.cantidad_vendida }}"
+              }
+            ]
+          }
+        },
+        "options": {}
+      },
+      "id": "95f852fa-fdaa-4fec-a1bb-d1a7ab019250",
+      "name": "Update Inventory",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        1616
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Productos"
+        },
+        "options": {}
+      },
+      "id": "ac5bd3a6-da49-4fdd-97e5-d7f35e19908e",
+      "name": "Get Product Catalog",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        2032
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get sales data from previous node\nconst salesData = $input.all();\n\n// Get today's date in YYYY-MM-DD format\nconst today = new Date().toISOString().split('T')[0];\n\n// Filter sales for today\nconst todaySales = salesData.filter(item => {\n  const saleDate = item.json.date || item.json.fecha || '';\n  return saleDate.startsWith(today);\n});\n\n// Calculate total sales amount\nlet totalAmount = 0;\nlet transactionCount = todaySales.length;\n\ntodaySales.forEach(sale => {\n  const amount = parseFloat(sale.json.amount || sale.json.monto || sale.json.total || 0);\n  totalAmount += amount;\n});\n\n// Format response message in Spanish\nconst message = `📊 *Resumen de Ventas del Día*\\n\\n` +\n  `📅 Fecha: ${new Date().toLocaleDateString('es-ES')}\\n` +\n  `💰 Total Vendido: $${totalAmount.toFixed(2)}\\n` +\n  `🛒 Número de Transacciones: ${transactionCount}\\n` +\n  `📈 Promedio por Venta: $${transactionCount > 0 ? (totalAmount / transactionCount).toFixed(2) : '0.00'}`;\n\n// Return formatted data\nreturn [{\n  json: {\n    message: message,\n    totalAmount: totalAmount,\n    transactionCount: transactionCount,\n    date: today,\n    averagePerSale: transactionCount > 0 ? totalAmount / transactionCount : 0\n  }\n}];"
+      },
+      "id": "dd505a63-6d78-444d-8832-fb409f7ae656",
+      "name": "Calculate Daily Sales",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter sales data for the last 7 days and calculate weekly summary\nconst salesData = $input.all();\nconst now = new Date();\nconst sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);\n\n// Filter sales from last 7 days\nconst weeklySales = salesData.filter(item => {\n  const saleDate = new Date(item.json.date || item.json.fecha || item.json.timestamp);\n  return saleDate >= sevenDaysAgo && saleDate <= now;\n});\n\n// Calculate total sales amount\nconst totalAmount = weeklySales.reduce((sum, item) => {\n  const amount = parseFloat(item.json.amount || item.json.monto || item.json.total || 0);\n  return sum + amount;\n}, 0);\n\n// Count number of transactions\nconst transactionCount = weeklySales.length;\n\n// Group by day and calculate daily breakdown\nconst dailyBreakdown = {};\nweeklySales.forEach(item => {\n  const saleDate = new Date(item.json.date || item.json.fecha || item.json.timestamp);\n  const dateKey = saleDate.toISOString().split('T')[0];\n  \n  if (!dailyBreakdown[dateKey]) {\n    dailyBreakdown[dateKey] = {\n      date: dateKey,\n      amount: 0,\n      transactions: 0\n    };\n  }\n  \n  const amount = parseFloat(item.json.amount || item.json.monto || item.json.total || 0);\n  dailyBreakdown[dateKey].amount += amount;\n  dailyBreakdown[dateKey].transactions += 1;\n});\n\n// Sort daily breakdown by date\nconst sortedDailyBreakdown = Object.values(dailyBreakdown).sort((a, b) => \n  new Date(a.date) - new Date(b.date)\n);\n\n// Format daily breakdown for message\nconst dailyBreakdownText = sortedDailyBreakdown.map(day => {\n  const date = new Date(day.date);\n  const dayName = date.toLocaleDateString('es-ES', { weekday: 'long' });\n  const dateStr = date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });\n  return `📅 ${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${dateStr}: $${day.amount.toFixed(2)} (${day.transactions} ventas)`;\n}).join('\\n');\n\n// Calculate average daily sales\nconst averageDailySales = totalAmount / 7;\n\n// Format response message in Spanish\nconst message = `📊 *RESUMEN DE VENTAS SEMANAL*\\n` +\n  `━━━━━━━━━━━━━━━━━━━━━━\\n\\n` +\n  `📆 Período: Últimos 7 días\\n` +\n  `💰 Total de Ventas: $${totalAmount.toFixed(2)}\\n` +\n  `🧾 Número de Transacciones: ${transactionCount}\\n` +\n  `📈 Promedio Diario: $${averageDailySales.toFixed(2)}\\n\\n` +\n  `*Desglose Diario:*\\n` +\n  `${dailyBreakdownText}\\n\\n` +\n  `━━━━━━━━━━━━━━━━━━━━━━`;\n\nreturn [{\n  json: {\n    message: message,\n    totalAmount: totalAmount,\n    transactionCount: transactionCount,\n    averageDailySales: averageDailySales,\n    dailyBreakdown: sortedDailyBreakdown,\n    period: 'weekly'\n  }\n}];"
+      },
+      "id": "c11020bf-62cf-4f47-adca-8c550f5a102c",
+      "name": "Calculate Weekly Sales",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get sales and expenses data from previous nodes\nconst salesData = $input.first().json;\nconst expensesData = $('Get Expenses Data').all();\n\n// Calculate total income from sales\nlet totalIncome = 0;\nconst salesByCategory = {};\n\nif (salesData && salesData.rows) {\n  for (const sale of salesData.rows) {\n    const amount = parseFloat(sale.amount || 0);\n    const category = sale.category || 'Sin categoría';\n    \n    totalIncome += amount;\n    \n    if (!salesByCategory[category]) {\n      salesByCategory[category] = 0;\n    }\n    salesByCategory[category] += amount;\n  }\n}\n\n// Calculate total expenses\nlet totalExpenses = 0;\nconst expensesByCategory = {};\n\nif (expensesData && expensesData.length > 0) {\n  const expensesJson = expensesData[0].json;\n  \n  if (expensesJson && expensesJson.rows) {\n    for (const expense of expensesJson.rows) {\n      const amount = parseFloat(expense.amount || 0);\n      const category = expense.category || 'Sin categoría';\n      \n      totalExpenses += amount;\n      \n      if (!expensesByCategory[category]) {\n        expensesByCategory[category] = 0;\n      }\n      expensesByCategory[category] += amount;\n    }\n  }\n}\n\n// Calculate net profit\nconst netProfit = totalIncome - totalExpenses;\n\n// Format response message in Spanish\nlet message = '📊 *RESUMEN FINANCIERO*\\n\\n';\n\n// Income section\nmessage += '💰 *INGRESOS TOTALES:* $' + totalIncome.toFixed(2) + '\\n';\nif (Object.keys(salesByCategory).length > 0) {\n  message += '\\n_Desglose por categoría:_\\n';\n  for (const [category, amount] of Object.entries(salesByCategory)) {\n    message += `  • ${category}: $${amount.toFixed(2)}\\n`;\n  }\n}\n\n// Expenses section\nmessage += '\\n💸 *EGRESOS TOTALES:* $' + totalExpenses.toFixed(2) + '\\n';\nif (Object.keys(expensesByCategory).length > 0) {\n  message += '\\n_Desglose por categoría:_\\n';\n  for (const [category, amount] of Object.entries(expensesByCategory)) {\n    message += `  • ${category}: $${amount.toFixed(2)}\\n`;\n  }\n}\n\n// Net profit section\nmessage += '\\n';\nif (netProfit >= 0) {\n  message += '✅ *BALANCE (GANANCIA):* $' + netProfit.toFixed(2);\n} else {\n  message += '⚠️ *BALANCE (PÉRDIDA):* $' + netProfit.toFixed(2);\n}\n\nreturn {\n  json: {\n    totalIncome,\n    totalExpenses,\n    netProfit,\n    salesByCategory,\n    expensesByCategory,\n    message\n  }\n};"
+      },
+      "id": "f9ee5f2f-2382-4af7-a7cd-df6f2ac5d38c",
+      "name": "Calculate Financial Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        1232
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get inventory data from previous node\nconst inventoryData = $input.all();\n\n// Process and format inventory items\nconst inventoryItems = inventoryData.map(item => ({\n  product: item.json.product || item.json.nombre || item.json.name || 'Producto desconocido',\n  stock: parseInt(item.json.stock || item.json.cantidad || 0),\n  isLowStock: parseInt(item.json.stock || item.json.cantidad || 0) < 10\n}));\n\n// Sort by stock level (lowest first)\ninventoryItems.sort((a, b) => a.stock - b.stock);\n\n// Format the report message in Spanish\nlet reportMessage = '📦 *REPORTE DE INVENTARIO*\\n\\n';\n\nif (inventoryItems.length === 0) {\n  reportMessage += 'No hay productos en el inventario.';\n} else {\n  inventoryItems.forEach(item => {\n    const alertIcon = item.isLowStock ? '⚠️ ' : '';\n    const stockStatus = item.isLowStock ? ' (STOCK BAJO)' : '';\n    reportMessage += `${alertIcon}*${item.product}*\\n`;\n    reportMessage += `   Stock actual: ${item.stock} unidades${stockStatus}\\n\\n`;\n  });\n  \n  // Add summary\n  const lowStockCount = inventoryItems.filter(item => item.isLowStock).length;\n  if (lowStockCount > 0) {\n    reportMessage += `\\n⚠️ *${lowStockCount} producto(s) con stock bajo*`;\n  }\n}\n\nreturn {\n  json: {\n    message: reportMessage,\n    inventoryItems: inventoryItems,\n    lowStockCount: inventoryItems.filter(item => item.isLowStock).length,\n    totalProducts: inventoryItems.length\n  }\n};"
+      },
+      "id": "04667909-f822-4cf2-ba33-504c54117429",
+      "name": "Format Stock Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        1424
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Commands').item.json.message.chat.id }}",
+        "text": "={{ $json.formattedReport || $json.report || $json.message || 'Report generated successfully' }}",
+        "additionalFields": {}
+      },
+      "id": "5783d912-53cb-437d-9f4c-44c508773429",
+      "name": "Send Telegram Response",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        1136
+      ],
+      "webhookId": "52083ff3-b113-4430-ab93-79548f979341",
+      "credentials": {
+        "telegramApi": {
+          "id": "NMXTo1B6AuOLjtWL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Commands').item.json.message.chat.id }}",
+        "text": "✅ Venta registrada exitosamente. Inventario actualizado.",
+        "additionalFields": {}
+      },
+      "id": "f1c4b153-505b-47b1-8de1-926dfa7d3ac6",
+      "name": "Confirm Sale Registration",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        1616
+      ],
+      "webhookId": "cf05e5da-0d9f-4c4b-84c9-5304f5d35c5a",
+      "credentials": {
+        "telegramApi": {
+          "id": "NMXTo1B6AuOLjtWL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Commands').item.json.message.chat.id }}",
+        "text": "✅ Gasto registrado exitosamente.",
+        "additionalFields": {}
+      },
+      "id": "3cb7c6e0-97c5-4c2b-8cac-ddf9d13c4d21",
+      "name": "Confirm Expense Registration",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        656
+      ],
+      "webhookId": "60aa2c19-e4ea-4c88-af8c-0071f15f904f",
+      "credentials": {
+        "telegramApi": {
+          "id": "NMXTo1B6AuOLjtWL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.message.from.id }}",
+              "rightValue": "<__PLACEHOLDER_VALUE__Authorized Telegram User IDs (comma separated)__>",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4042f61f-46bd-4729-9d5b-f8118cf13470",
+      "name": "Check Authorized User",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Eres un asistente virtual de una licorería. Ayudas a los clientes a consultar productos, verificar disponibilidad, conocer precios y realizar pedidos. Sé amable, profesional y conciso en tus respuestas."
+        }
+      },
+      "id": "4649513b-1c98-440d-9b2c-93f77ab36523",
+      "name": "Customer Service AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        344,
+        328
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "id": "b19093c4-5de1-46a4-98c2-56c576a489c7",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        552
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "jYtK8fbIqrWbe7hM",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Consulta el catálogo de productos con nombres, precios y descripciones",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Productos"
+        },
+        "options": {}
+      },
+      "id": "06a15f7d-e994-4817-9f76-6ffc6e5e578c",
+      "name": "Product Catalog Tool",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        552
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Verifica la disponibilidad y stock de productos",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Inventario"
+        },
+        "options": {}
+      },
+      "id": "ab3f49ef-d9e7-407a-b17d-51468b5abe72",
+      "name": "Inventory Tool",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        552
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FlVGg8CC04AMAJYT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Crea un pedido de cliente con los productos solicitados",
+        "jsCode": "// Create order tool - appends order to Google Sheets 'Pedidos' tab\n// Input: query object with customer name, products, and total\n\nconst orderData = typeof query === 'string' ? JSON.parse(query) : query;\n\n// Generate order number (timestamp-based)\nconst orderNumber = 'ORD-' + Date.now();\n\n// Prepare order data\nconst fecha = new Date().toISOString().split('T')[0];\nconst clienteNombre = orderData.cliente_nombre || orderData.customerName || 'Cliente';\nconst productos = orderData.productos || orderData.products || '';\nconst total = orderData.total || 0;\nconst estado = 'pendiente';\n\n// Append to Google Sheets (Pedidos tab)\n// Note: You'll need to configure Google Sheets node separately\n// This returns the confirmation message\n\nconst confirmationMessage = `✅ Pedido creado exitosamente\\n\\n` +\n  `📋 Número de pedido: ${orderNumber}\\n` +\n  `👤 Cliente: ${clienteNombre}\\n` +\n  `📦 Productos: ${productos}\\n` +\n  `💰 Total: $${total}\\n` +\n  `📊 Estado: ${estado}\\n\\n` +\n  `Fecha: ${fecha}`;\n\nreturn confirmationMessage;",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"cliente_nombre\": {\n      \"type\": \"string\",\n      \"description\": \"Nombre del cliente que realiza el pedido\"\n    },\n    \"productos\": {\n      \"type\": \"string\",\n      \"description\": \"Lista de productos solicitados\"\n    },\n    \"total\": {\n      \"type\": \"number\",\n      \"description\": \"Monto total del pedido\"\n    }\n  },\n  \"required\": [\"cliente_nombre\", \"productos\", \"total\"]\n}"
+      },
+      "id": "9c73f645-c1c7-4252-8937-42c1422ae85d",
+      "name": "Create Order Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        552
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Commands": {
+      "main": [
+        [
+          {
+            "node": "Check Authorized User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Authorized User": {
+      "main": [
+        [
+          {
+            "node": "Parse Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Telegram Message": {
+      "main": [
+        [
+          {
+            "node": "Route Telegram Commands",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Telegram Commands": {
+      "main": [
+        [
+          {
+            "node": "Register Sale",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Register Expense",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Sales Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Inventory Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register Sale": {
+      "main": [
+        [
+          {
+            "node": "Update Inventory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Inventory": {
+      "main": [
+        [
+          {
+            "node": "Confirm Sale Registration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register Expense": {
+      "main": [
+        [
+          {
+            "node": "Confirm Expense Registration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sales Data": {
+      "main": [
+        [
+          {
+            "node": "Calculate Daily Sales",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Calculate Weekly Sales",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Calculate Financial Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Expenses Data": {
+      "main": [
+        [
+          {
+            "node": "Calculate Financial Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Inventory Data": {
+      "main": [
+        [
+          {
+            "node": "Format Stock Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Daily Sales": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Weekly Sales": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Financial Summary": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Stock Report": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Chat Interface": {
+      "main": [
+        [
+          {
+            "node": "Customer Service AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Customer Service AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Catalog Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inventory Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Order Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f05a0e08-ffba-44f8-8639-07839a9a680b",
+  "meta": {
+    "instanceId": "bb56a79f8a7874354c1dec992df1e52079d11cbb41c44c9dbebb9002f1b2b0a8"
+  },
+  "id": "wV33uVhK3Ye7mBCT",
+  "tags": []
+}
